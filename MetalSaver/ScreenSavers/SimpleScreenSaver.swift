@@ -8,6 +8,7 @@
 import Foundation
 import ScreenSaver
 
+/// moves  colorful `NSView` rectangles around the screen
 class SimpleScreenSaverView: ScreenSaverView {
     let squareView = SquareView(color: .red)
     let blueView = SquareView(color: .blue)

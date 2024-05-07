@@ -23,6 +23,7 @@ extension NSRect {
     }
 }
 
+///  simple Core Graphics example using `NSBezierPath`
 class CGSaver: ScreenSaverView {
 
     var t: CGFloat = 0.0

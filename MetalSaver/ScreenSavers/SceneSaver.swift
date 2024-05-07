@@ -9,32 +9,12 @@ import Foundation
 import ScreenSaver
 import SceneKit
 
-
+///  simple SceneKit demo that renders 50 randomly placed rotating `SCNBox`es
 class SceneSaver: ScreenSaverView {
-
-    let materialCount = 10
 
     var t: CGFloat = 0.0
 
     let view = SCNView()
-
-    fileprivate func buildMaterials() -> [SCNMaterial] {
-        var materials = [SCNMaterial]()
-
-        for _ in 0..<materialCount {
-            let material = SCNMaterial()
-            material.diffuse.contents = NSColor(
-                deviceRed: SSRandomFloatBetween(0, 1),
-                green: SSRandomFloatBetween(0, 1),
-                blue: SSRandomFloatBetween(0, 1),
-                alpha: SSRandomFloatBetween(0, 1))
-            material.specular.contents = NSColor.white
-            materials.append(material)
-        }
-//        geometry.firstMaterial = material
-        return materials
-    }
-
 
     // Helper function to generate random material index data
     fileprivate func generateMaterialIndexData(count: Int) -> Data {
@@ -66,7 +46,6 @@ class SceneSaver: ScreenSaverView {
         let rotation = SCNAction.rotateBy(x: 3 * .pi, y: 2 * .pi, z: 0, duration: 7)
         let repeatRotation = SCNAction.repeatForever(rotation)
 
-
         let count = 50
         for _ in 0..<count {
             let boxNode = SCNNode(geometry: geometry)
@@ -74,7 +53,7 @@ class SceneSaver: ScreenSaverView {
                 x: SSRandomFloatBetween(-10, 10),
                 y: SSRandomFloatBetween(-5, 5),
                 z: 0)
-//            boxNode.runAction(repeatRotation)
+            boxNode.runAction(repeatRotation)
             scene.rootNode.addChildNode(boxNode)
         }
 

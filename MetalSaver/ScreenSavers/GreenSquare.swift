@@ -8,6 +8,7 @@
 import Foundation
 import ScreenSaver
 
+/// simple screen saver that renders a green rotating `NSView`
 class GreenSquareScreenSaverView: ScreenSaverView {
     let greenSquareView = GreenSquareView()
     
