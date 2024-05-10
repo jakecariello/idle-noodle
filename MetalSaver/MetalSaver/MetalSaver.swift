@@ -6,4 +6,4 @@
 //
 
 
-class MetalSaver: SceneSaver { }
+class MetalSaver: PhysicsSaver { }
