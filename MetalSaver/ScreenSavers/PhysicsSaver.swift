@@ -159,8 +159,6 @@ class PhysicsSaver: ScreenSaverView {
         addSubview(view)
 
         view.scene = buildScene()
-        view.allowsCameraControl = true
-        view.showsStatistics = true
         view.backgroundColor = NSColor.black
 
         attractorNode.position = SCNVector3(0, 0, 0)
