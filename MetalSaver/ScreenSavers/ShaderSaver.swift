@@ -25,6 +25,9 @@ class ShaderSaver: ScreenSaverView {
     var t: CGFloat = 0.0
     let view = SCNView()
     let period: CGFloat = 10
+    let pipeSegments = 64
+    let ringSegments = 16
+
 
     fileprivate func setupCamera(for scene: SCNScene) {
 //        let node = SCNNode().at(.up.scaled(by: 5))
@@ -37,9 +40,9 @@ class ShaderSaver: ScreenSaverView {
 //        node.look(at: .zero)
 //        let v = (simd_float3(.left) + simd_float3(.up)) / 2
 //        node.look(at: SCNVector3(x: CGFloat(v.x), y: CGFloat(v.y), z: CGFloat(v.z)))
-        node.constraints = [SCNLookAtConstraint(target: .at(.zero))]
+        node.constraints = [SCNLookAtConstraint(target: .at(.origin))]
         node.runAction(.repeatForever(.rotateBy(x: 0, y: 2 * .pi, z: 0, duration: 10)))
-       
+
         scene.add(node)
     }
 
@@ -102,6 +105,8 @@ class ShaderSaver: ScreenSaverView {
         // pixel uv (-.5 to .5)
         // vec2 uv = (1. - (sin(u_time) / 10.)) * ZOOM * _surface.diffuseTexcoord;
         vec2 uv = ZOOM * (_surface.diffuseTexcoord + 0.5);
+        uv.x = uv.x * 4.0;
+        uv.y = uv.y * (4.0 / 3.0);
         
         // oscillating param for "power" of the curve
         // use uv magnitude to shift phase
@@ -153,7 +158,7 @@ class ShaderSaver: ScreenSaverView {
         _surface.diffuse = vec4(col, 1.0);
         //_surface.diffuse = vec4(_surface.diffuseTexcoord, 0.0, 1.0);
         """
-        
+
         let geometryShader = """
         #pragma body
         float PI = 3.141592653589793;
@@ -173,29 +178,34 @@ class ShaderSaver: ScreenSaverView {
         let scene = SCNScene()
         setupCamera(for: scene)
         setupLighting(for: scene)
-        
 
-        let inner = SCNNode(geometry: SCNTorus(ringRadius: 1, pipeRadius: 0.15)).at(.zero)
+
+
+        let inner = SCNNode.with(
+            SCNTorus(ringRadius: 1, pipeRadius: 0.15)
+                .segmentedBy(pipeSegments, and: ringSegments)).at(.origin)
         setupMaterial(for: inner.geometry!)
-//        inner.runAction(.rotateBy(x: 0, y: 2 * .pi / 3, z: 0, duration: 0))
         inner.transform = SCNMatrix4Mult(inner.transform, SCNMatrix4MakeRotation(-2 * .pi / 3, 0, 1, 0))
         inner.runAction(.repeatForever(.rotateBy(x: -2 * .pi, y: 0, z: 0, duration: period)))
         scene.add(node: inner)
 
-        let middle = SCNNode(geometry: SCNTorus(ringRadius: 1.5, pipeRadius: 0.15)).at(.zero)
+
+
+        let middle = SCNNode.with(
+            SCNTorus(ringRadius: 1.5, pipeRadius: 0.15)
+                .segmentedBy(pipeSegments, and: ringSegments)).at(.origin)
         middle.runAction(.repeatForever(.rotateBy(x: 0, y: 0, z: 2 * .pi, duration: period)))
         setupMaterial(for: middle.geometry!)
         scene.add(node: middle)
 
-        let outer = SCNNode(geometry: SCNTorus(ringRadius: 2, pipeRadius: 0.15)).at(.zero)
-//        inner.runAction(.rotateBy(x: 0, y: -2 * .pi / 3, z: 0, duration: 0))
+
+        let outer = SCNNode.with(
+            SCNTorus(ringRadius: 2, pipeRadius: 0.15)
+                .segmentedBy(pipeSegments, and: ringSegments)).at(.origin)
         outer.transform = SCNMatrix4Mult(outer.transform, SCNMatrix4MakeRotation(2 * .pi / 3, 0, 1, 0))
         outer.runAction(.repeatForever(.rotateBy(x: 2 * .pi, y: 0, z: 0, duration: period)))
         setupMaterial(for: outer.geometry!)
         scene.add(node: outer)
-
-
-
 
         return scene
     }

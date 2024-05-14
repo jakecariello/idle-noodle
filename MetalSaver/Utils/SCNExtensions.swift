@@ -10,7 +10,7 @@ import SceneKit
 
 extension SCNVector3 {
     /// Creates a zero vector (0, 0, 0).
-    static let zero = SCNVector3(0, 0, 0)
+    static let origin = SCNVector3(0, 0, 0)
 
     /// Created a unit vector pointing in the negative X direction (-1, 0, 0).
     static let left = SCNVector3(-1, 0, 0)
@@ -57,6 +57,16 @@ extension SCNNode {
         newNode.position = position
         return newNode
     }
+    
+    /// Creates a new `SCNNode` with the specified geometry.
+    ///
+    /// - Parameter geometry: The geometry to assign to the new node.
+    /// - Returns: A new `SCNNode` instance containing the given geometry.
+    static func with(_ geometry: SCNGeometry) -> SCNNode {
+        let newNode = SCNNode()
+        newNode.geometry = geometry
+        return newNode
+    }
 }
 
 extension SCNScene {
@@ -74,4 +84,19 @@ extension SCNScene {
         rootNode.addChildNode(node)
     }
 }
+
+extension SCNTorus {
+    /// Creates a `SCNTorus` segment with the specified pipe and ring segment counts.
+    ///
+    /// - Parameters:
+    ///   - pipe: The number of segments along the torus's pipe (minor circumference).
+    ///   - ring: The number of segments around the torus's ring (major circumference).
+    /// - Returns: A `SCNTorus` instance with the specified segment counts.
+    func segmentedBy(_ pipe: Int, and ring: Int) -> SCNTorus {
+        pipeSegmentCount = pipe
+        ringSegmentCount = ring
+        return self
+    }
+}
+
 

@@ -57,7 +57,6 @@ class PhysicsSaver: ScreenSaverView {
         """
 
         material.shaderModifiers = [SCNShaderModifierEntryPoint.geometry: shader]
-
         geometry.materials = [material]
     }
 
