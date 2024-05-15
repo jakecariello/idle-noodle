@@ -6,4 +6,4 @@
 //
 
 
-class MetalSaver: ShaderSaver { }
+class MetalSaver: NoiseSaver { }

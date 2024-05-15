@@ -6,16 +6,6 @@
 //
 
 import Foundation
-
-//
-//  PhysicsSaver.swift
-//  MetalSaver
-//
-//  Created by Jake Cariello on 5/6/24.
-//
-
-
-import Foundation
 import ScreenSaver
 import SceneKit
 
@@ -31,7 +21,7 @@ class ShaderSaver: ScreenSaverView {
 
     fileprivate func setupCamera(for scene: SCNScene) {
 //        let node = SCNNode().at(.up.scaled(by: 5))
-        let node = SCNNode.at(.up.scaled(by: 4))
+        let node = SCNNode.at(.j.scaled(by: 4))
 //        let node: SCNNode = .at(.zero)
         node.camera = SCNCamera()
         node.camera!.fieldOfView = 60

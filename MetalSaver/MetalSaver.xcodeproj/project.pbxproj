@@ -18,7 +18,13 @@
 		498BA3AD2BE6E5070003214C /* CGSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498BA3AC2BE6E5070003214C /* CGSaver.swift */; };
 		498BA3AE2BE6E5070003214C /* CGSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498BA3AC2BE6E5070003214C /* CGSaver.swift */; };
 		49BECD552BEFBFDC009389F7 /* SCNExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BECD542BEFBFDC009389F7 /* SCNExtensions.swift */; };
-		49BECD562BEFC17A009389F7 /* SCNExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BECD542BEFBFDC009389F7 /* SCNExtensions.swift */; };
+		49BECD592BF2F847009389F7 /* SCNExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BECD542BEFBFDC009389F7 /* SCNExtensions.swift */; };
+		49BECD5F2BF2F9EC009389F7 /* NoiseSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BECD5E2BF2F9EC009389F7 /* NoiseSaver.swift */; };
+		49BECD602BF3097E009389F7 /* NoiseSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BECD5E2BF2F9EC009389F7 /* NoiseSaver.swift */; };
+		49BECD622BF3BF2F009389F7 /* Materials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BECD612BF3BF2F009389F7 /* Materials.swift */; };
+		49BECD642BF3BF72009389F7 /* Nodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BECD632BF3BF72009389F7 /* Nodes.swift */; };
+		49BECD652BF3C28C009389F7 /* Materials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BECD612BF3BF2F009389F7 /* Materials.swift */; };
+		49BECD662BF3C28C009389F7 /* Nodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49BECD632BF3BF72009389F7 /* Nodes.swift */; };
 		49C64C662BE9C4D70070AD85 /* PhysicsSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C64C652BE9C4D70070AD85 /* PhysicsSaver.swift */; };
 		49C64C672BE9C4D70070AD85 /* PhysicsSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C64C652BE9C4D70070AD85 /* PhysicsSaver.swift */; };
 		49C64C692BE9D98E0070AD85 /* GlobalAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49C64C682BE9D98E0070AD85 /* GlobalAssets.xcassets */; };
@@ -62,6 +68,9 @@
 		498BA3AC2BE6E5070003214C /* CGSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGSaver.swift; sourceTree = "<group>"; };
 		49BECD542BEFBFDC009389F7 /* SCNExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNExtensions.swift; sourceTree = "<group>"; };
 		49BECD572BEFC37F009389F7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		49BECD5E2BF2F9EC009389F7 /* NoiseSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoiseSaver.swift; sourceTree = "<group>"; };
+		49BECD612BF3BF2F009389F7 /* Materials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Materials.swift; sourceTree = "<group>"; };
+		49BECD632BF3BF72009389F7 /* Nodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Nodes.swift; sourceTree = "<group>"; };
 		49C64C652BE9C4D70070AD85 /* PhysicsSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhysicsSaver.swift; sourceTree = "<group>"; };
 		49C64C682BE9D98E0070AD85 /* GlobalAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = GlobalAssets.xcassets; sourceTree = "<group>"; };
 		49C64C712BEDFFB90070AD85 /* ShaderSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderSaver.swift; sourceTree = "<group>"; };
@@ -123,6 +132,7 @@
 				498AA71C2BE812B600D80BA4 /* SceneSaver.swift */,
 				49C64C652BE9C4D70070AD85 /* PhysicsSaver.swift */,
 				49C64C712BEDFFB90070AD85 /* ShaderSaver.swift */,
+				49BECD5E2BF2F9EC009389F7 /* NoiseSaver.swift */,
 			);
 			path = ScreenSavers;
 			sourceTree = "<group>";
@@ -131,8 +141,20 @@
 			isa = PBXGroup;
 			children = (
 				49BECD542BEFBFDC009389F7 /* SCNExtensions.swift */,
+				49BECD612BF3BF2F009389F7 /* Materials.swift */,
+				49BECD632BF3BF72009389F7 /* Nodes.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		49BECD5D2BF2F99E009389F7 /* Preview */ = {
+			isa = PBXGroup;
+			children = (
+				49F6FE232BC9A67F00AD97DB /* Preview */,
+				49F6FE352BC9A68000AD97DB /* PreviewTests */,
+				49F6FE3F2BC9A68000AD97DB /* PreviewUITests */,
+			);
+			name = Preview;
 			sourceTree = "<group>";
 		};
 		49F6FE052BC9A58500AD97DB = {
@@ -142,10 +164,8 @@
 				4967B7672BC9B463008BC3B1 /* ScreenSavers */,
 				49F6FE112BC9A58500AD97DB /* MetalSaver */,
 				49BECD532BEFBFC1009389F7 /* Utils */,
+				49BECD5D2BF2F99E009389F7 /* Preview */,
 				49C64C682BE9D98E0070AD85 /* GlobalAssets.xcassets */,
-				49F6FE232BC9A67F00AD97DB /* Preview */,
-				49F6FE352BC9A68000AD97DB /* PreviewTests */,
-				49F6FE3F2BC9A68000AD97DB /* PreviewUITests */,
 				49F6FE102BC9A58500AD97DB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -383,10 +403,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				4967B7662BC9B458008BC3B1 /* MetalSaver.swift in Sources */,
+				49BECD5F2BF2F9EC009389F7 /* NoiseSaver.swift in Sources */,
+				49BECD642BF3BF72009389F7 /* Nodes.swift in Sources */,
 				498BA3A62BE46A5D0003214C /* SimpleScreenSaver.swift in Sources */,
 				49BECD552BEFBFDC009389F7 /* SCNExtensions.swift in Sources */,
 				49C64C722BEDFFBA0070AD85 /* ShaderSaver.swift in Sources */,
 				498AA71D2BE812B600D80BA4 /* SceneSaver.swift in Sources */,
+				49BECD622BF3BF2F009389F7 /* Materials.swift in Sources */,
 				49F6FE1D2BC9A5EF00AD97DB /* GreenSquare.swift in Sources */,
 				498BA3AD2BE6E5070003214C /* CGSaver.swift in Sources */,
 				49C64C662BE9C4D70070AD85 /* PhysicsSaver.swift in Sources */,
@@ -397,7 +420,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49BECD562BEFC17A009389F7 /* SCNExtensions.swift in Sources */,
+				49BECD652BF3C28C009389F7 /* Materials.swift in Sources */,
+				49BECD662BF3C28C009389F7 /* Nodes.swift in Sources */,
+				49BECD602BF3097E009389F7 /* NoiseSaver.swift in Sources */,
+				49BECD592BF2F847009389F7 /* SCNExtensions.swift in Sources */,
 				4967B7682BC9B616008BC3B1 /* MetalSaver.swift in Sources */,
 				498BA3A72BE46A5D0003214C /* SimpleScreenSaver.swift in Sources */,
 				49F6FE272BC9A67F00AD97DB /* ContentView.swift in Sources */,
