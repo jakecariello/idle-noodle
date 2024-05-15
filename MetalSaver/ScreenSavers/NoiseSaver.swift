@@ -16,44 +16,51 @@ class NoiseSaver: ScreenSaverView {
     let view = SCNView()
 
     var t: Float = 0.0
-    let tStep: Float = 0.01
+    let tStep: Float = 0.04
 
     struct Noise {
-        static let frequency = 0.1
+        static let frequency = 0.3
+
         static let octaveCount = 2
-        static let persistence = 0.5
+        static let persistence = 0.6
         static let lacunarity = 5.0
         static func seed() -> Int32 { Int32(GKRandomSource().nextInt()) }
-        static func create(f frequencyMultiplier: Double) -> GKNoise {
-            GKNoise(GKPerlinNoiseSource(
-                frequency: frequency * frequencyMultiplier,
+        static func createNoise(withJitter: Double) -> GKNoise {
+            let jitterAmplitude = 0.1 // only use increments of 0.1
+            let jitter = GKRandomDistribution(lowestValue: -Int(jitterAmplitude * 10), highestValue: Int(jitterAmplitude * 10)).nextUniform() / 10
+            let jitteredFrequency = frequency * (1.0 + Double(jitter))
+            return GKNoise(GKPerlinNoiseSource(
+                frequency: frequency * jitteredFrequency, // Use jittered frequency
                 octaveCount: octaveCount,
                 persistence: persistence,
                 lacunarity: lacunarity,
                 seed: seed()
             ))
         }
+        static func create(_ counts: CGSize, _ size: CGSize, with noise: GKNoise, at time: Float) -> GKNoiseMap {
+            // Circle parameters
+            let radius: Double = Double(size.height) / 4.0 // Adjust the radius as needed
+//            let center = vector_double2(Double(size.width) / 2.0, Double(size.height) / 2.0)
+
+            // Calculate origin coordinates based on time
+            let angle = Double(time) // Adjust the speed as needed
+            let origin: vector_double2 = radius * vector_double2(cos(angle), sin(angle))
+
+            return GKNoiseMap(
+                    noise,
+                    size: vector_double2(Double(size.width), Double(size.height)),
+                    origin: origin, // Use the calculated circular origin
+                    sampleCount: vector_int2(Int32(counts.width), Int32(counts.height)),
+                    seamless: true
+                )
+        }
     }
 
-    var xNoise = Noise.create(f: 0.99)
-    var yNoise = Noise.create(f: 1.03)
-    var zNoise = Noise.create(f: 1.27)
-    var xNoise2 = Noise.create(f: 0.95)
-    var yNoise2 = Noise.create(f: 1.51)
-    var zNoise2 = Noise.create(f: 1.39)
+    var xNoise = Noise.createNoise(withJitter: 0.2)
+    var yNoise = Noise.createNoise(withJitter: 0.2)
 
-
-    let noiseSource = GKPerlinNoiseSource(
-        frequency: Noise.frequency,
-        octaveCount: Noise.octaveCount,
-        persistence: Noise.persistence,
-        lacunarity: Noise.lacunarity,
-        seed: Noise.seed()
-    )
-
-
-    var noiseMap: GKNoiseMap?
-    var noiseMapSize: CGSize?
+    var xNoiseMap: GKNoiseMap?
+    var yNoiseMap: GKNoiseMap?
 
     /// number of rows and cols of cylinders
     let counts = CGSize(width: 80, height: 40)
@@ -63,12 +70,9 @@ class NoiseSaver: ScreenSaverView {
     var cylinders: [[SCNNode]] = []
     let radius: CGFloat = 0.05
     let height: CGFloat = 0.75
-    lazy var aspect: CGSize = {
-        CGSize(width: dimensions.width / counts.width, height: dimensions.height / counts.height)
-    }()
 
     private func setupCamera(for scene: SCNScene) {
-        let node = SCNNode().at(.k.scaled(by: 5))
+        let node = SCNNode().at(.k.scaled(by: 6))
         node.camera = SCNCamera()
 //        node.camera!.usesOrthographicProjection = true
 //        node.camera!.orthographicScale = 3
@@ -132,46 +136,32 @@ class NoiseSaver: ScreenSaverView {
         return scene
     }
 
-    func sampleNoise3D(at position: vector_float3) -> Float {
-        let x = xNoise.value(atPosition: vector_float2(position.x, position.z))
-        let y = yNoise.value(atPosition: vector_float2(-position.y, position.z))
-        let z = zNoise.value(atPosition: vector_float2(position.z, -position.x)) // Note the different coordinate combinations
-        return ((abs(x) + abs(y) + abs(z)) / 3.0) - (sqrt(2) / 2)
-    }
-
-    func sampleNoise3D2(at position: vector_float3) -> Float {
-        let x = xNoise2.value(atPosition: vector_float2(position.x, position.z))
-        let y = yNoise2.value(atPosition: vector_float2(position.y, position.z))
-        let z = zNoise2.value(atPosition: vector_float2(position.z, position.x)) // Note the different coordinate combinations
-
-        return (x + y + z) / 3.0
-    }
-
-
     override func animateOneFrame() {
         super.animateOneFrame()
 
         t += tStep // Control the speed of animation
 
-        for row in 0..<Int(counts.height) {
-            for col in 0..<Int(counts.width) {
+        xNoiseMap = Noise.create(counts, dimensions, with: xNoise, at: t)
+        yNoiseMap = Noise.create(counts, dimensions, with: yNoise, at: t)
+
+
+        for row in 0 ..< Int(counts.height) {
+            for col in 0 ..< Int(counts.width) {
                 let node = cylinders[row][col]
 
-                // 2D noise positions (separate for x and y, z is constant)
-                let noisePosition = vector_float3(
-                    x: Float(col) * Float(aspect.width),
-                    y: Float(row) * Float(aspect.height),
-                    z: t
-                )
-                let x = sampleNoise3D(at: noisePosition)
-                let y = sampleNoise3D2(at: noisePosition)
 
-                let lengthScaled = pow(simd_length(simd_float2(x, y)) / (sqrt(2) / 2), 2)
-                let xRotation = simd_quatf(angle: x * .pi, axis: SIMD3<Float>(1, 0, 0))
-                let yRotation = simd_quatf(angle: y * .pi, axis: SIMD3<Float>(0, 1, 0))
+                guard let x = xNoiseMap?.value(at: vector_int2(Int32(col), Int32(row))) else { return }
+                guard let y = yNoiseMap?.value(at: vector_int2(Int32(row), Int32(col))) else { return }
+
+                let lengthScaled = pow(simd_length(simd_float2(x, y)), sqrt(2) / 2)
+                let xRotation = simd_quatf(angle: x * .pi / 4.0, axis: SIMD3<Float>(1, 0, 0))
+                let yRotation = simd_quatf(angle: y * .pi / 4.0, axis: SIMD3<Float>(0, 1, 0))
+
 
                 let combinedRotation = simd_mul(xRotation, yRotation)
-                node.simdWorldOrientation = simd_slerp(node.simdWorldOrientation, simd_quatf(real: combinedRotation.real, imag: -combinedRotation.imag), 0.1)
+//                node.simdWorldOrientation = simd_slerp(node.simdWorldOrientation, simd_quatf(real: combinedRotation.real, imag: -combinedRotation.imag), 1.0)
+                node.simdWorldOrientation = simd_mul(combinedRotation, simd_quatf(angle: .pi / 2, axis: SIMD3<Float>(1, 0, 0)))
+//                node.simdOrientation =
 
                 node.scale = SCNVector3(lengthScaled, lengthScaled, lengthScaled)
 
@@ -203,6 +193,14 @@ class NoiseSaver: ScreenSaverView {
 //                .height)),
 //            seamless: true
 //        )
+
+        xNoise = { Noise.createNoise(withJitter: 0.1) }()
+        yNoise = { Noise.createNoise(withJitter: 0.1) }()
+//        lazy var zNoise: GKNoiseMap = { Noise.create(counts, dimensions) }()
+//        lazy var xNoise2: GKNoiseMap = { Noise.create(counts, dimensions) }()
+//        lazy var yNoise2: GKNoiseMap = { Noise.create(counts, dimensions) }()
+//        lazy var zNoise2: GKNoiseMap = { Noise.create(counts, dimensions) }()
+
 
 
 

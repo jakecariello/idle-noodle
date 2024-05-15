@@ -19,7 +19,7 @@ struct Materials {
                 float yCoord = _surface.diffuseTexcoord.y;
 
                 _surface.diffuse = bodyColor;
-                _surface.transparent.a = pow(1.0 - yCoord, 3.0);
+                _surface.transparent.a = pow(1.0 - yCoord, 2.0);
             """])
     
     static var red: SCNMaterial = {
